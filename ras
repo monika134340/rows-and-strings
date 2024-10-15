@@ -1,0 +1,81 @@
+#include <iostream>
+#include <vector>
+#include <string>
+
+using namespace std;
+
+string encrypt(const string &text, int numRows) {
+   
+    string cleanedText;
+    for (char ch : text) {
+        if (ch != ' ') {
+            cleanedText += ch;
+        }
+    }
+
+    int len = cleanedText.length();
+
+    vector<vector<char>> grid(numRows, vector<char>((len / numRows) + 1, '\0'));
+
+    
+    for (int i = 0; i < len; i++) {
+        grid[i % numRows][i / numRows] = cleanedText[i];
+    }
+
+    
+    string encryptedText = "";
+    for (int col = 0; col < (len / numRows) + 1; col++) {
+        for (int row = 0; row < numRows; row++) {
+            if (grid[row][col] != '\0') { 
+                encryptedText += grid[row][col];
+            }
+        }
+    }
+
+    return encryptedText;
+}
+
+string decrypt(const string &encryptedText, int numRows) {
+    int len = encryptedText.length();
+    
+    int numCols = (len / numRows) + 1;
+
+    
+    vector<vector<char>> grid(numRows, vector<char>(numCols, '\0'));
+
+    
+    int index = 0;
+    for (int col = 0; col < numCols; col++) {
+        for (int row = 0; row < numRows; row++) {
+            if (index < len) {
+                grid[row][col] = encryptedText[index++];
+            }
+        }
+    }
+
+    string decryptedText = "";
+    for (const auto &row : grid) {
+        for (char ch : row) {
+            if (ch != '\0') {
+                decryptedText += ch;
+            }
+        }
+    }
+
+    return decryptedText;
+}
+
+int main() {
+    string text = "HELLO WORLD";
+    int numRows = 3;
+
+    cout << "Original Text: " << text << endl;
+
+    string encryptedText = encrypt(text, numRows);
+    cout << "Encrypted Text: " << encryptedText << endl;
+
+    string decryptedText = decrypt(encryptedText, numRows);
+    cout << "Decrypted Text: " << decryptedText << endl;
+
+    return 0;
+}
